@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLIND ARCHIVE</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f4eae1;
+            color: #111;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        /* 모바일 레이아웃 */
+        .mobile-layout {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 빈폴 상단 타이포 로고 */
+        .brand-logo {
+            width: 100%;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 5px;
+            color: #111;
+            margin: 10px 0 20px 0;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #111;
+            text-align: center;
+        }
+
+        .sub-title {
+            font-size: 13px;
+            color: #444;
+            margin-top: 4px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .score-badge {
+            background-color: #5a1818;
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        /* 이미지 카드 영역 */
+        .image-card {
+            background-color: #fff;
+            width: 100%;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .cloth-img {
+            width: 100%;
+            height: 270px;
+            background-color: #fcfbfa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 1px solid #eae2d9;
+        }
+
+        .cloth-preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .card-label {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        /* 시대 힌트 섹션 */
+        .hint-section {
+            width: 100%;
+            margin-top: 24px;
+        }
+
+        .hint-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .hint-title::before, .hint-title::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #ccc;
+        }
+        .hint-title::before { left: 0; }
+        .hint-title::after { right: 0; }
+
+        .hint-row {
+            background-color: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border: 1px solid #eae2d9;
+        }
+
+        .hint-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            width: 85px;
+            flex-shrink: 0;
+        }
+
+        .hint-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #222;
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        /* 연도 선택 영역 */
+        .quiz-section {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .quiz-q {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .option-btn {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 14px 0;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn.selected {
+            background-color: #111;
+            color: #fff;
+            border-color: #111;
+        }
+
+        /* 정답 제출 버튼 */
+        .submit-btn {
+            width: 100%;
+            background-color: #5a1818;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #421010;
+        }
+
+        .info-footer {
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        /* 디자인 커스텀 팝업 (모달) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background-color: #fff;
+            width: 100%;
+            max-width: 340px;
+            border-radius: 16px;
+            padding: 26px 24px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .modal-message {
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
+            line-height: 1.6;
+            margin-bottom: 22px;
+            white-space: pre-line;
+        }
+
+        .modal-close-btn {
+            width: 100%;
+            background-color: #5a1818;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background-color: #421010;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mobile-layout">
+    <div class="brand-logo">BEANPOLE</div>
+
+    <h1 class="title">BLIND ARCHIVE</h1>
+    <p class="sub-title">의류의 출시 연도를 추리해보세요</p>
+    <div class="score-badge" id="progress-badge">1 / 2 정답 필요</div>
+
+    <div class="image-card">
+        <div class="cloth-img">
+            <img src="picture/1.png" class="cloth-preview-img" id="cloth-preview">
+        </div>
+        <div class="card-label" id="archive-id">ARCHIVE LOOK 01</div>
+    </div>
+
+    <div class="hint-section">
+        <div class="hint-title">시대 힌트</div>
+        <div class="hint-row">
+            <span class="hint-label">🧥 옷 이름</span>
+            <span class="hint-value" id="hint-name">네이비 블럭패턴 니트 가디건</span>
+        </div>
+        <div class="hint-row">
+            <span class="hint-label">🎬 메가 히트작</span>
+            <span class="hint-value" id="hint-media">드라마 &lt;상속자들&gt; / 드라마 &lt;별에서 온 그대&gt;</span>
+        </div>
+        <div class="hint-row">
+            <span class="hint-label">🎵 시대 음악</span>
+            <span class="hint-value" id="hint-music">으르렁 (Growl) - EXO / Bounce - 조용필</span>
+        </div>
+    </div>
+
+    <div class="quiz-section">
+        <p class="quiz-q">이 옷이 출시된 연도는?</p>
+        <div class="options-grid" id="options-container">
+            <button class="option-btn" onclick="selectYear(this)">2011</button>
+            <button class="option-btn" onclick="selectYear(this)">2013</button>
+            <button class="option-btn" onclick="selectYear(this)">2015</button>
+            <button class="option-btn" onclick="selectYear(this)">2017</button>
+        </div>
+        <button class="submit-btn" onclick="submitAnswer()">정답 제출</button>
+    </div>
+
+    <p class="info-footer">
+        ℹ️ 2개 이상 정답 시 다음 공간으로 이동<br>
+        음악 · 미디어 · 문화 키워드를 바탕으로 연도를 추리해보세요
+    </p>
+</div>
+
+<div class="modal-overlay" id="custom-modal">
+    <div class="modal-box">
+        <div class="modal-icon" id="modal-icon">🎉</div>
+        <p class="modal-message" id="modal-message">정답입니다!</p>
+        <button class="modal-close-btn" id="modal-action-btn" onclick="closeModal()">확인</button>
+    </div>
+</div>
+
+<script>
+    // 이미지 파일 경로를 'picture/1.png', 'picture/2.png'로 업데이트했습니다.
+    const quizData = [
+        {
+            id: "ARCHIVE LOOK 01",
+            name: "네이비 블럭패턴 니트 가디건",
+            media: "드라마 <상속자들> / 드라마 <별에서 온 그대>",
+            music: "으르렁 (Growl) - EXO / Bounce - 조용필",
+            options: ["2011", "2013", "2015", "2017"],
+            answer: "2013",
+            imgUrl: "picture/1.png"
+        },
+        {
+            id: "ARCHIVE LOOK 02",
+            name: "올라운더 블랙 남성 보아 구스 롱다운 패딩 코트",
+            media: "드라마 <동백꽃 필 무렵> / 영화 <기생충>",
+            music: "작은 것들을 위한 시 - BTS / 주저하는 연인들을 위해 - 잔나비",
+            options: ["2016", "2018", "2019", "2021"],
+            answer: "2019",
+            imgUrl: "picture/2.png"
+        }
+    ];
+
+    let currentStage = 0;
+    let selectedYearValue = "";
+    let correctAnswersCount = 0;
+
+    function selectYear(button) {
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => btn.classList.remove('selected'));
+        
+        button.classList.add('selected');
+        selectedYearValue = button.innerText;
+    }
+
+    function showModal(icon, message, callbackClick) {
+        document.getElementById('modal-icon').innerText = icon;
+        document.getElementById('modal-message').innerText = message;
+        
+        const overlay = document.getElementById('custom-modal');
+        overlay.classList.add('active');
+        
+        const actionBtn = document.getElementById('modal-action-btn');
+        actionBtn.onclick = function() {
+            overlay.classList.remove('active');
+            if(callbackClick) callbackClick();
+        };
+    }
+
+    function closeModal() {
+        document.getElementById('custom-modal').classList.remove('active');
+    }
+
+    function submitAnswer() {
+        if (!selectedYearValue) {
+            showModal("⚠️", "연도를 선택해주세요!", null);
+            return;
+        }
+
+        const currentQuiz = quizData[currentStage];
+
+        if (selectedYearValue === currentQuiz.answer) {
+            correctAnswersCount++;
+            currentStage++;
+
+            if (currentStage < quizData.length) {
+                showModal("🎉", "정답입니다!\n다음 아카이브 의류로 이동합니다.", function() {
+                    loadNextQuiz();
+                });
+            } else {
+                document.getElementById('progress-badge').innerText = `완료: ${correctAnswersCount} / 2 정답`;
+                
+                showModal("✨", "정답입니다!\n\nTimeless Bintage Shop 팝업 제품을\n지금 온라인에서 만나보세요!", function() {
+                    window.location.href = "https://www.beanpole.com/journal/mastery/list.bp";
+                });
+            }
+        } else {
+            showModal("❌", "틀렸습니다!\n힌트를 보고 다시 한 번 골라보세요.", null);
+        }
+    }
+
+    function loadNextQuiz() {
+        const nextQuiz = quizData[currentStage];
+        
+        document.getElementById('progress-badge').innerText = `${correctAnswersCount} / 2 정답 필요`;
+        document.getElementById('archive-id').innerText = nextQuiz.id;
+        
+        document.getElementById('hint-name').innerText = nextQuiz.name;
+        document.getElementById('hint-media').innerText = nextQuiz.media;
+        document.getElementById('hint-music').innerText = nextQuiz.music;
+        
+        document.getElementById('cloth-preview').src = nextQuiz.imgUrl;
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = "";
+        
+        nextQuiz.options.forEach(year => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = year;
+            btn.setAttribute('onclick', 'selectYear(this)');
+            optionsContainer.appendChild(btn);
+        });
+
+        selectedYearValue = "";
+    }
+</script>
+
+</body>
+</html>
